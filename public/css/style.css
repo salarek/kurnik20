@@ -78,7 +78,9 @@ body {
   float: left;
   width: 60%;
   height: 270px;
-  background-color: var(--light-2);
+  background-color: black;
+  color: white;
+  font-size: 50px;
 }
 .chat {
   padding: 14px 5% 14px;
@@ -109,5 +111,5 @@ img {
 #wisielec {
   position: relative;
   float: left;
-  left: 120px;
+  left: 10px;
 }

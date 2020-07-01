@@ -1,5 +1,5 @@
 const users = [];
-
+let i = 0;
 function joinUser(id, username, room) {
   const user = { id, username, room };
   users.push(user);
@@ -20,4 +20,19 @@ function userLeave(id) {
     return users.splice(index, 1)[0];
   }
 }
-module.exports = { joinUser, getCurrentUser, getRoomUsers, userLeave };
+
+function getNextUser() {
+  i++;
+  if (i > users.length - 1) {
+    i = 0;
+  }
+  return `${users[i].username}`;
+}
+module.exports = {
+  joinUser,
+  getCurrentUser,
+  getRoomUsers,
+  userLeave,
+  getNextUser,
+  users,
+};

@@ -7,6 +7,8 @@ const {
   getCurrentUser,
   getRoomUsers,
   userLeave,
+  getNextUser,
+  users,
 } = require("./utils/users");
 const formatMessage = require("./utils/messages");
 
@@ -26,7 +28,11 @@ io.on("connection", (socket) => {
         "message",
         formatMessage(botName, `${user.username} dolaczyl do gry`)
       );
+    if (users.length > 2) {
+      socket.broadcast.to(user.room).emit("QUE", getNextUser());
+    }
 
+    console.log(getNextUser());
     //send users and room info
 
     io.to(user.room).emit("roomUsers", {
@@ -37,11 +43,17 @@ io.on("connection", (socket) => {
   socket.on("clientPassMessage", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("GamePassword", msg);
+    io.to(user.room).emit("blocked", "block");
   });
 
   socket.on("clientMessage", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("message", formatMessage(user.username, msg));
+  });
+
+  socket.on("koniecTury", (msg) => {
+    const user = getCurrentUser(socket.id);
+    io.to(user.room).emit("QUE", getNextUser());
   });
 
   socket.on("disconnect", () => {
