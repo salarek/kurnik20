@@ -43,7 +43,6 @@ io.on("connection", (socket) => {
   socket.on("clientPassMessage", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("GamePassword", msg);
-    io.to(user.room).emit("blocked", "block");
   });
 
   socket.on("clientMessage", (msg) => {
