@@ -93,7 +93,7 @@ async function outputGameMessage(msg) {
     }
   }
   div.innerHTML = `<p> ${visiblePassword}</p>`;
-  document.querySelector(".game").appendChild(div);
+  document.getElementById("gameContainer").appendChild(div);
   msgLen = msgg.length;
 
   for (i = 0; i < 8; i++) {
@@ -115,7 +115,7 @@ async function outputGameMessage(msg) {
       msgLen--;
 
       div.innerHTML = `<p> ${visiblePassword}</p>`;
-      document.querySelector(".game").appendChild(div);
+      document.getElementById("gameContainer").appendChild(div);
     }
     //wisielec.innerHTML = `<img src="assets/${i}.png" alt="" />`;
     if (comparePassword[0] === comparePassword[1]) {

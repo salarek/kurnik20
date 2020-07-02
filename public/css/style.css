@@ -7,12 +7,12 @@ body {
   --light-1: #bc81e4;
   --light-2: #e9d5f6;
 }
-.start {
+.mainIndexContainer {
   margin: 80px auto;
   max-width: 1200px;
   background-color: var(--dark-1);
 }
-.header {
+header {
   text-align: center;
   padding: 10px;
   background-color: var(--dark-1);
@@ -20,7 +20,7 @@ body {
   font-size: 30px;
 }
 
-.left {
+.joinRoomContainer {
   text-align: center;
   margin: 30px;
   float: left;
@@ -32,7 +32,7 @@ body {
   border-width: 2px;
 }
 
-.right {
+.selectGameContainer {
   margin: 30px;
   float: left;
   width: 30%;
@@ -42,19 +42,19 @@ body {
   border-width: 2px;
 }
 
-.left .form-control {
+.joinRoomContainer .formControl {
   margin: 20px;
 }
 
 /* Wisielec page */
 
-.start2 {
+.mainWisielecContainer {
   margin: 80px auto;
   max-width: 1200px;
   background-color: var(--dark-1);
 }
 
-.pass-container {
+.selectPasswordContainer {
   padding: 12px 0px 14px;
   text-align: center;
   float: left;
@@ -63,7 +63,7 @@ body {
   background-color: var(--light-1);
 }
 
-.categoryTape {
+.pointsContainer {
   padding: 0px 0px 14px;
   text-align: center;
   float: left;
@@ -72,7 +72,7 @@ body {
   background-color: var(--light-2);
 }
 
-.game {
+.gameContainer {
   padding: 14px 0px 14px;
   text-align: center;
   float: left;
@@ -101,7 +101,7 @@ body {
   background-color: var(--dark-1);
 }
 
-.btn2 {
+.backToHomeButton {
   float: right;
 }
 img {
