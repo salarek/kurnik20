@@ -1,8 +1,8 @@
 const chatIn = document.getElementById("chatIn");
 const wisielec = document.getElementById("wisielec");
-const chat = document.querySelector(".chat");
+const chat = document.getElementById("chat");
 const passForm = document.getElementById("passForm");
-const { username, room } = Qs.parse(location.search, {
+const { username, room, game } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
@@ -10,7 +10,7 @@ const comparePassword = [];
 var punkty = 0;
 const socket = io();
 
-socket.emit("joinRoom", { username, room });
+socket.emit("joinRoom", { username, room, game });
 
 // message from server
 socket.on("message", (message) => {
@@ -54,7 +54,7 @@ function outputMessage(message) {
   const div = document.createElement("div");
   //div.classList.add("message");
   div.innerHTML = `<p style = "color:#902dd2";>${message.username}:<span style = "color: black"> ${message.text}</span></p>`;
-  document.querySelector(".chat").appendChild(div);
+  document.getElementById("chat").appendChild(div);
   comparePassword[0] = message.text;
 }
 
@@ -120,7 +120,7 @@ async function outputGameMessage(msg) {
     //wisielec.innerHTML = `<img src="assets/${i}.png" alt="" />`;
     if (comparePassword[0] === comparePassword[1]) {
       div.innerHTML = `<p> ${msg} poprawne haslo!</p>`;
-      document.querySelector(".chat").appendChild(div);
+      document.getElementById("chat").appendChild(div);
       punkty = punkty + msgLen;
       tabela = document.getElementById("pkt");
       tabela.innerHTML = `<p>${punkty}</p>`;
@@ -130,7 +130,7 @@ async function outputGameMessage(msg) {
     }
     if (i == 7) {
       div.innerHTML = `<p> Za pozno! Haslo to: ${msg} </p>`;
-      document.querySelector(".chat").appendChild(div);
+      document.getElementById("chat").appendChild(div);
       punkty = punkty - 10;
       tabela = document.getElementById("pkt");
       tabela.innerHTML = `<p>${punkty}</p>`;

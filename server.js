@@ -17,8 +17,8 @@ const server = http.createServer(app);
 const io = socketio(server);
 const botName = "bot";
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ username, room }) => {
-    const user = joinUser(socket.id, username, room);
+  socket.on("joinRoom", ({ username, room, game }) => {
+    const user = joinUser(socket.id, username, room, game);
     console.log({ username, room });
     socket.join(user.room);
 
@@ -29,43 +29,46 @@ io.on("connection", (socket) => {
         formatMessage(botName, `${user.username} dolaczyl do gry`)
       );
     if (users.length > 2) {
-      socket.broadcast.to(user.room).emit("QUE", getNextUser());
+      socket.broadcast.to(user.room, user.game).emit("QUE", getNextUser());
     }
 
     console.log(getNextUser());
     //send users and room info
 
-    io.to(user.room).emit("roomUsers", {
+    io.to(user.room, user.game).emit("roomUsers", {
       room: user.room,
       users: getRoomUsers(user.room),
     });
   });
   socket.on("clientPassMessage", (msg) => {
     const user = getCurrentUser(socket.id);
-    io.to(user.room).emit("GamePassword", msg);
+    io.to(user.room, user.game).emit("GamePassword", msg);
   });
 
   socket.on("clientMessage", (msg) => {
     const user = getCurrentUser(socket.id);
-    io.to(user.room).emit("message", formatMessage(user.username, msg));
+    io.to(user.room, user.game).emit(
+      "message",
+      formatMessage(user.username, msg)
+    );
   });
 
   socket.on("koniecTury", (msg) => {
     const user = getCurrentUser(socket.id);
-    io.to(user.room).emit("QUE", getNextUser());
+    io.to(user.room, user.game).emit("QUE", getNextUser());
   });
 
   socket.on("disconnect", () => {
     const user = userLeave(socket.id);
 
     if (user) {
-      io.to(user.room).emit(
+      io.to(user.room, user.game).emit(
         "message",
         formatMessage(botName, `${user.username} has left the chat`)
       );
 
       // Send users and room info
-      io.to(user.room).emit("roomUsers", {
+      io.to(user.room, user.game).emit("roomUsers", {
         room: user.room,
         users: getRoomUsers(user.room),
       });
