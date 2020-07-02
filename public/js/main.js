@@ -53,7 +53,7 @@ passForm.addEventListener("submit", (e) => {
 function outputMessage(message) {
   const div = document.createElement("div");
   //div.classList.add("message");
-  div.innerHTML = `<p style = "color:#902dd2";>${message.username}:<span style = "color: black"> ${message.text}</span></p>`;
+  div.innerHTML = `<p style = "color:#cf0000";>${message.username}:<span style = "color: white"> ${message.text}</span></p>`;
   document.getElementById("chat").appendChild(div);
   comparePassword[0] = message.text;
 }
