@@ -11,6 +11,7 @@ const {
   users,
 } = require("./utils/users");
 const formatMessage = require("./utils/messages");
+const { SSL_OP_COOKIE_EXCHANGE } = require("constants");
 
 const app = express();
 const server = http.createServer(app);
@@ -82,6 +83,7 @@ io.on("connection", (socket) => {
     }
   });
 });
+
 //twoja stara to stara rura ez
 app.use(express.static(path.join(__dirname, "public")));
 const PORT = process.env.PORT || 3000;
