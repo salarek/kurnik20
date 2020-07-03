@@ -23,7 +23,7 @@ function userLeave(id) {
 
 function getNextUser() {
   i++;
-  if (i > users.length - 1) {
+  if (i === users.length) {
     i = 0;
   }
   return `${users[i].username}`;

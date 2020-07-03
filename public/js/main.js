@@ -14,14 +14,17 @@ socket.emit("joinRoom", { username, room, game });
 
 // message from server
 socket.on("message", (message) => {
-  console.log(message);
   outputMessage(message);
-
+  console.log(username);
   //scroll down
   chat.scrollTop = chat.scrollHeight;
 });
 socket.on("GamePassword", (msg) => {
   outputGameMessage(msg);
+});
+
+socket.on("playerWon", (msg) => {
+  comparePassword[3] = msg;
 });
 
 socket.on("QUE", (msg) => {
@@ -31,6 +34,7 @@ socket.on("QUE", (msg) => {
 chatIn.addEventListener("submit", (e) => {
   e.preventDefault();
   const msg = e.target.elements.msg.value;
+  comparePassword[0] = msg;
   socket.emit("clientMessage", msg);
   e.target.elements.msg.value = "";
   e.target.elements.msg.focus();
@@ -55,7 +59,6 @@ function outputMessage(message) {
   //div.classList.add("message");
   div.innerHTML = `<p style = "color:#cf0000";>${message.username}:<span style = "color: white"> ${message.text}</span></p>`;
   document.getElementById("chat").appendChild(div);
-  comparePassword[0] = message.text;
 }
 
 async function outputGameMessage(msg) {
@@ -118,13 +121,19 @@ async function outputGameMessage(msg) {
       document.getElementById("gameContainer").appendChild(div);
     }
     //wisielec.innerHTML = `<img src="assets/${i}.png" alt="" />`;
+    if (comparePassword[1] === comparePassword[3]) {
+      div.innerHTML = `<p> ${msg} poprawne haslo!</p>`;
+      document.getElementById("chat").appendChild(div);
+      break;
+    }
+
     if (comparePassword[0] === comparePassword[1]) {
       div.innerHTML = `<p> ${msg} poprawne haslo!</p>`;
       document.getElementById("chat").appendChild(div);
       punkty = punkty + msgLen;
       tabela = document.getElementById("pkt");
       tabela.innerHTML = `<p>${punkty}</p>`;
-      socket.emit("koniecTury", "koniec");
+      socket.emit("koniecTury", comparePassword[0]);
 
       break;
     }

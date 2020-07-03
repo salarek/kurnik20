@@ -19,11 +19,12 @@ const botName = "bot";
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room, game }) => {
     const user = joinUser(socket.id, username, room, game);
-    console.log({ username, room });
+    console.log({ username, room, game });
     socket.join(user.room);
+    socket.join(user.game);
 
     socket.broadcast
-      .to(user.room)
+      .to(user.room, user.game)
       .emit(
         "message",
         formatMessage(botName, `${user.username} dolaczyl do gry`)
@@ -55,6 +56,8 @@ io.on("connection", (socket) => {
 
   socket.on("koniecTury", (msg) => {
     const user = getCurrentUser(socket.id);
+    socket.broadcast.emit("message", `Poprawne Haslo: ${msg}`);
+    socket.broadcast.emit("playerWon", msg);
     io.to(user.room, user.game).emit("QUE", getNextUser());
   });
 
