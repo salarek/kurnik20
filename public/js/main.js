@@ -12,17 +12,19 @@ const socket = io();
 
 socket.emit("joinRoom", { username, room, game });
 
-// message from server
+// message from server to chat
 socket.on("message", (message) => {
   outputMessage(message);
   console.log(username);
   //scroll down
   chat.scrollTop = chat.scrollHeight;
 });
+//message from server to show on game container
 socket.on("GamePassword", (msg) => {
   outputGameMessage(msg);
 });
 
+//message from server to break game because player typed correct password
 socket.on("playerWon", (msg) => {
   comparePassword[3] = msg;
 });
@@ -30,7 +32,7 @@ socket.on("playerWon", (msg) => {
 socket.on("QUE", (msg) => {
   alert(`zaczyna gracz: ${msg}`);
 });
-// message submit
+// message submit from chat input
 chatIn.addEventListener("submit", (e) => {
   e.preventDefault();
   const msg = e.target.elements.msg.value;
@@ -40,7 +42,7 @@ chatIn.addEventListener("submit", (e) => {
   e.target.elements.msg.focus();
 });
 
-//password submit
+//password submit from password input
 passForm.addEventListener("submit", (e) => {
   e.preventDefault();
   while (e.target.elements.password.value.length > 30) {
@@ -111,6 +113,7 @@ async function outputGameMessage(msg) {
       i--;
       flag = true;
     }
+
     if (flag === false) {
       await sleep(2000);
       password[index[r]] = msgg[index[r]];
@@ -122,13 +125,13 @@ async function outputGameMessage(msg) {
     }
     //wisielec.innerHTML = `<img src="assets/${i}.png" alt="" />`;
     if (comparePassword[1] === comparePassword[3]) {
-      div.innerHTML = `<p> ${msg} poprawne haslo!</p>`;
+      div.innerHTML = `DOBRZE!!!! ${msg.toUpperCase()} to poprawne haslo!</p>`;
       document.getElementById("chat").appendChild(div);
       break;
     }
 
     if (comparePassword[0] === comparePassword[1]) {
-      div.innerHTML = `<p> ${msg} poprawne haslo!</p>`;
+      div.innerHTML = `<p>DOBRZE!!!! ${msg.toUpperCase()} to poprawne haslo!</p>`;
       document.getElementById("chat").appendChild(div);
       punkty = punkty + msgLen;
       tabela = document.getElementById("pkt");

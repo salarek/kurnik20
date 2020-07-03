@@ -16,7 +16,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 const botName = "bot";
+
 io.on("connection", (socket) => {
+  //USER JOIN TO ROOM
   socket.on("joinRoom", ({ username, room, game }) => {
     const user = joinUser(socket.id, username, room, game);
     console.log({ username, room, game });
@@ -41,10 +43,6 @@ io.on("connection", (socket) => {
       users: getRoomUsers(user.room),
     });
   });
-  socket.on("clientPassMessage", (msg) => {
-    const user = getCurrentUser(socket.id);
-    io.to(user.room, user.game).emit("GamePassword", msg);
-  });
 
   socket.on("clientMessage", (msg) => {
     const user = getCurrentUser(socket.id);
@@ -53,10 +51,16 @@ io.on("connection", (socket) => {
       formatMessage(user.username, msg)
     );
   });
+  //wisielec
+  socket.on("clientPassMessage", (msg) => {
+    const user = getCurrentUser(socket.id);
 
+    io.to(user.room, user.game).emit("GamePassword", msg);
+  });
+
+  //Wiesielec
   socket.on("koniecTury", (msg) => {
     const user = getCurrentUser(socket.id);
-    socket.broadcast.emit("message", `Poprawne Haslo: ${msg}`);
     socket.broadcast.emit("playerWon", msg);
     io.to(user.room, user.game).emit("QUE", getNextUser());
   });
