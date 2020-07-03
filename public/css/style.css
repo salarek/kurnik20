@@ -16,6 +16,7 @@ body {
   margin: auto;
   width: 80%;
   background-color: var(--dark-1);
+  
 }
 header {
   position: relative;
@@ -55,6 +56,7 @@ header {
 
 .joinRoomContainer .formControl {
   margin: 20px;
+ 
 }
 .btn {
   background-color: black;
@@ -85,6 +87,10 @@ input {
   font-size: 19px;
   border: none;
   width: 100px;
+}
+
+.dupa {
+  margin-top: 60px;
 }
 /* Wisielec page */
 
