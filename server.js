@@ -11,7 +11,6 @@ const {
   users,
 } = require("./utils/users");
 const formatMessage = require("./utils/messages");
-const { SSL_OP_COOKIE_EXCHANGE } = require("constants");
 
 const app = express();
 const server = http.createServer(app);
