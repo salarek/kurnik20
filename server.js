@@ -2,6 +2,8 @@ const path = require("path");
 const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
+let readyPlayers = 0;
+let numberOfPlayers = 0;
 const {
   joinUser,
   getCurrentUser,
@@ -31,9 +33,6 @@ io.on("connection", (socket) => {
         "message",
         formatMessage(botName, `${user.username} dolaczyl do gry`)
       );
-    if (users.length > 2) {
-      socket.broadcast.to(user.room, user.game).emit("QUE", getNextUser());
-    }
 
     console.log(getNextUser());
     //send users and room info
@@ -51,6 +50,14 @@ io.on("connection", (socket) => {
       formatMessage(user.username, msg)
     );
   });
+
+  socket.on("startGame", (msg) => {
+    const user = getCurrentUser(socket.id);
+    readyPlayers = readyPlayers + msg;
+    if (readyPlayers > 1 && readyPlayers < 3) {
+      io.to(user.room, user.game).emit("QUE", getNextUser());
+    }
+  });
   //wisielec
   socket.on("clientPassMessage", (msg) => {
     const user = getCurrentUser(socket.id);
@@ -63,6 +70,16 @@ io.on("connection", (socket) => {
     const user = getCurrentUser(socket.id);
     socket.broadcast.emit("playerWon", msg);
     io.to(user.room, user.game).emit("QUE", getNextUser());
+  });
+
+  //Wisielec
+  socket.on("koniecTuryLoss", (msg) => {
+    numberOfPlayers++;
+    if (numberOfPlayers === users.length) {
+      const user = getCurrentUser(socket.id);
+      io.to(user.room, user.game).emit("QUE", getNextUser());
+      numberOfPlayers = 0;
+    }
   });
 
   socket.on("disconnect", () => {

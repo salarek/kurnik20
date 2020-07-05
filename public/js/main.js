@@ -1,7 +1,9 @@
 const chatIn = document.getElementById("chatIn");
 const wisielec = document.getElementById("wisielec");
+const startGamee = document.getElementById("startGame");
 const chat = document.getElementById("chat");
 const passForm = document.getElementById("passForm");
+const selectPassword = document.getElementById("selectPassword");
 const { username, room, game } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
@@ -30,7 +32,13 @@ socket.on("playerWon", (msg) => {
 });
 
 socket.on("QUE", (msg) => {
-  alert(`zaczyna gracz: ${msg}`);
+  if (msg == username) {
+    selectPassword.style.visibility = "visible";
+  }
+  const div = document.createElement("div");
+  //div.classList.add("message");
+  div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> Kolej gracza: ${msg}</span></p>`;
+  document.getElementById("chat").appendChild(div);
 });
 // message submit from chat input
 chatIn.addEventListener("submit", (e) => {
@@ -40,6 +48,14 @@ chatIn.addEventListener("submit", (e) => {
   socket.emit("clientMessage", msg);
   e.target.elements.msg.value = "";
   e.target.elements.msg.focus();
+});
+
+startGamee.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const button = e.target.elements.startButton;
+  wisielec.style.visibility = "hidden";
+  button.style.visibility = "hidden";
+  socket.emit("startGame", 1);
 });
 
 //password submit from password input
@@ -53,6 +69,7 @@ passForm.addEventListener("submit", (e) => {
     const msg = e.target.elements.password.value;
     socket.emit("clientPassMessage", msg);
     e.target.elements.password.value = "";
+    selectPassword.style.visibility = "hidden";
   }
 });
 
@@ -146,9 +163,15 @@ async function outputGameMessage(msg) {
       punkty = punkty - 10;
       tabela = document.getElementById("pkt");
       tabela.innerHTML = `<p>${punkty}</p>`;
-      socket.emit("koniecTury", "koniec");
+      socket.emit("koniecTuryLoss", "koniec");
     }
   }
+}
+
+function queOrder(msg) {
+  console.log(msg);
+  const passContainer = document.getElementById("selectPasswordContainer");
+  passContainer.style.display = "block";
 }
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));

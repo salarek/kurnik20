@@ -18,7 +18,7 @@
     </header>
     <div class="mainWisielecContainer">
       <div class="titleBanner">Wisielec Multiplayer</div>
-      <div class="selectPasswordContainer">
+      <div id="selectPassword" class="selectPasswordContainer">
         <br />
         <form id="passForm">
           <input id="category" type="text" placeholder="wpisz kategorie" />
@@ -31,7 +31,11 @@
         <div id="pkt">0</div>
       </div>
       <div id="gameContainer" class="gameContainer">
-        <div id="wisielec"></div>
+        <div id="wisielec">
+          <form id="startGame">
+            <button id="startButton">START</button>
+          </form>
+        </div>
       </div>
       <div id="chat" class="chat">
         Siemaneczko!
