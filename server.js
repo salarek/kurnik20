@@ -41,11 +41,13 @@ io.on("connection", (socket) => {
     });
 
     io.to(user.room).emit("settingPoints", user.username);
-    socket.on("otherPlayersPoints", (msg) => {
-      io.to(user.room).emit("otherPlayersPointsReceive", msg);
-    });
   });
 
+  socket.on("otherPlayersPoints", (msg) => {
+    const user = getCurrentUser(socket.id);
+    io.to(user.room).emit("otherPlayersPointsReceive", msg);
+    io.to(user.room).emit("punktyDoTabeli", msg);
+  });
   //socket sending message to chat from current user to all users
   socket.on("clientMessage", (msg) => {
     const user = getCurrentUser(socket.id);
@@ -88,6 +90,12 @@ io.on("connection", (socket) => {
       numberOfPlayers = 0;
     }
   });
+
+  socket.on("resetGame", (msg) => {
+    const user = getCurrentUser(socket.id);
+    io.to(user.room).emit("resetGameClient", msg);
+  });
+
   socket.on("punktyGracza", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("punktyDoTabeli", msg);
@@ -108,7 +116,6 @@ io.on("connection", (socket) => {
         users: getRoomUsers(user.room),
       });
     }
-    numberOfPlayers--;
   });
 });
 

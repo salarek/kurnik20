@@ -82,6 +82,16 @@ chatIn.addEventListener("submit", (e) => {
   e.target.elements.msg.focus();
 });
 
+socket.on("resetGameClient", (msg) => {
+  punkty = 0;
+  const div = document.createElement("div");
+  div.innerHTML = `Gracz ${msg} WYGRAL!!!!`;
+  document.getElementById("chat").appendChild(div);
+  const gracz2 = document.getElementById(`${username}`);
+  gracz2.innerHTML = `<p>${username} : ${punkty}</p>`;
+  socket.emit("otherPlayersPoints", { username, punkty });
+});
+
 startGamee.addEventListener("submit", (e) => {
   e.preventDefault();
   const button = e.target.elements.startButton;
@@ -216,6 +226,11 @@ async function outputGameMessage(msg) {
 
         socket.emit("koniecTury", comparePassword[0]);
         socket.emit("punktyGracza", { username, punkty });
+        if (punkty > 30) {
+          div.innerHTML = `<p>Gracz ${username} WYGRAL!!!!</p>`;
+          document.getElementById("chat").appendChild(div);
+          socket.emit("resetGame", username);
+        }
 
         break;
       }
@@ -227,6 +242,7 @@ async function outputGameMessage(msg) {
       tabela = document.getElementById("pkt");
       tabela.innerHTML = `<p>Twoje punkty: ${punkty}</p>`;
       socket.emit("koniecTuryLoss", "koniec");
+      socket.emit("punktyGracza", { username, punkty });
     }
   }
 }
