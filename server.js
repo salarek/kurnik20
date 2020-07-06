@@ -39,6 +39,11 @@ io.on("connection", (socket) => {
       room: user.room,
       users: getRoomUsers(user.room),
     });
+
+    io.to(user.room).emit("settingPoints", user.username);
+    socket.on("otherPlayersPoints", (msg) => {
+      io.to(user.room).emit("otherPlayersPointsReceive", msg);
+    });
   });
 
   //socket sending message to chat from current user to all users
@@ -83,6 +88,10 @@ io.on("connection", (socket) => {
       numberOfPlayers = 0;
     }
   });
+  socket.on("punktyGracza", (msg) => {
+    const user = getCurrentUser(socket.id);
+    io.to(user.room).emit("punktyDoTabeli", msg);
+  });
   //DISCONNECTION
   socket.on("disconnect", () => {
     const user = userLeave(socket.id);
@@ -99,6 +108,7 @@ io.on("connection", (socket) => {
         users: getRoomUsers(user.room),
       });
     }
+    numberOfPlayers--;
   });
 });
 

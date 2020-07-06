@@ -42,6 +42,29 @@ socket.on("QUE", (msg) => {
   div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> Kolej gracza: ${msg}</span></p>`;
   document.getElementById("chat").appendChild(div);
 });
+
+socket.on("punktyDoTabeli", (msg) => {
+  const gracz = document.getElementById(`${msg.username}`);
+  gracz.innerHTML = `<p>${msg.username} : ${msg.punkty}</p>`;
+});
+socket.on("settingPoints", (msg) => {
+  const div = document.createElement("div");
+  div.innerHTML = `<p>${msg} : 0</p>`;
+  div.id = msg;
+  document.getElementById("playersPoints").appendChild(div);
+  socket.emit("otherPlayersPoints", { username, punkty });
+});
+
+socket.on("otherPlayersPointsReceive", (msg) => {
+  const userRegistered = document.getElementById(`${msg.username}`);
+  if (!userRegistered) {
+    const div = document.createElement("div");
+    div.innerHTML = `<p>${msg.username} : ${msg.punkty}</p>`;
+    div.id = msg.username;
+    document.getElementById("playersPoints").appendChild(div);
+  }
+});
+
 // message submit from chat input
 chatIn.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -138,6 +161,8 @@ async function outputGameMessage(msg) {
     zegar--;
     czas = document.getElementById("czas");
     czas.innerHTML = `<p>czas: ${zegar}</p>`;
+    szanse = document.getElementById("szanse");
+    szanse.innerHTML = `<p>szanse: ${chances}</p>`;
     await sleep(1000);
     let tabWithIndex = [];
     if (waiting === false) {
@@ -187,8 +212,10 @@ async function outputGameMessage(msg) {
         document.getElementById("chat").appendChild(div);
         punkty = punkty + msgLen;
         tabela = document.getElementById("pkt");
-        tabela.innerHTML = `<p>${punkty}</p>`;
+        tabela.innerHTML = `<p>Twoje punkty: ${punkty}</p>`;
+
         socket.emit("koniecTury", comparePassword[0]);
+        socket.emit("punktyGracza", { username, punkty });
 
         break;
       }
@@ -198,7 +225,7 @@ async function outputGameMessage(msg) {
       document.getElementById("chat").appendChild(div);
       punkty = punkty - 10;
       tabela = document.getElementById("pkt");
-      tabela.innerHTML = `<p>${punkty}</p>`;
+      tabela.innerHTML = `<p>Twoje punkty: ${punkty}</p>`;
       socket.emit("koniecTuryLoss", "koniec");
     }
   }
