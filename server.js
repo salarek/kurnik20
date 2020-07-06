@@ -4,6 +4,7 @@ const express = require("express");
 const socketio = require("socket.io");
 let readyPlayers = 0;
 let numberOfPlayers = 0;
+//elo
 const {
   joinUser,
   getCurrentUser,

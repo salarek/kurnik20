@@ -54,6 +54,7 @@ socket.on("settingPoints", (msg) => {
   document.getElementById("playersPoints").appendChild(div);
   socket.emit("otherPlayersPoints", { username, punkty });
 });
+//elo
 
 socket.on("otherPlayersPointsReceive", (msg) => {
   const userRegistered = document.getElementById(`${msg.username}`);
