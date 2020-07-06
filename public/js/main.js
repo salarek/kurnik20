@@ -4,6 +4,7 @@ const startGamee = document.getElementById("startGame");
 const chat = document.getElementById("chat");
 const passForm = document.getElementById("passForm");
 const selectPassword = document.getElementById("selectPassword");
+let changeValue = false;
 const { username, room, game } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
@@ -11,13 +12,14 @@ const { username, room, game } = Qs.parse(location.search, {
 const comparePassword = [];
 var punkty = 0;
 const socket = io();
+let inputLetter = "";
 
 socket.emit("joinRoom", { username, room, game });
 
 // message from server to chat
 socket.on("message", (message) => {
   outputMessage(message);
-  console.log(username);
+
   //scroll down
   chat.scrollTop = chat.scrollHeight;
 });
@@ -45,6 +47,13 @@ chatIn.addEventListener("submit", (e) => {
   e.preventDefault();
   const msg = e.target.elements.msg.value;
   comparePassword[0] = msg;
+  inputLetter = msg;
+  if (changeValue === false) {
+    changeValue = true;
+  } else {
+    changeValue = false;
+  }
+
   socket.emit("clientMessage", msg);
   e.target.elements.msg.value = "";
   e.target.elements.msg.focus();
@@ -85,11 +94,16 @@ async function outputGameMessage(msg) {
   const div = document.createElement("div");
   //div.classList.add("message");
   index = [];
+  tabOfChar = [];
   password = [];
   msgg = [...msg];
+
+  for (i = 0; i < msgg.length; i++) {
+    tabOfChar[i] = msgg[i];
+  }
+
   for (i = 0; i < msgg.length; i++) {
     password[i] = "_";
-    index[i] = i;
   }
   for (j = 0; j < msgg.length; j++) {
     if (msgg[j] === " ") {
@@ -117,47 +131,69 @@ async function outputGameMessage(msg) {
   div.innerHTML = `<p> ${visiblePassword}</p>`;
   document.getElementById("gameContainer").appendChild(div);
   msgLen = msgg.length;
+  let chances = 5;
+  let waiting = false;
+  zegar = 30;
+  for (i = 0; i < 30; i++) {
+    zegar--;
+    czas = document.getElementById("czas");
+    czas.innerHTML = `<p>czas: ${zegar}</p>`;
+    await sleep(1000);
+    let tabWithIndex = [];
+    if (waiting === false) {
+      let z = 0;
 
-  for (i = 0; i < 8; i++) {
-    flag = false;
-    r = Math.floor(Math.random() * msgLen);
-    if (
-      visiblePassword[index[r]] === "-" ||
-      visiblePassword[index[r]] === "<br>"
-    ) {
-      index[r] = index[msgLen - 1];
-      msgLen--;
-      i--;
-      flag = true;
+      if (chances >= 0) {
+        msgg.findIndex((sp, index) => {
+          if (sp === inputLetter) {
+            tabWithIndex[z] = index;
+            z++;
+          }
+        });
+        console.log(changeValue);
+        if (changeValue === true) {
+          changeValue = false;
+          chances--;
+        }
+        console.log(chances);
+      } else {
+        div.innerHTML = `<p> Jestes Wisielcem! Czekanie na pozostalych... </p>`;
+        document.getElementById("chat").appendChild(div);
+        punkty = punkty - 10;
+        tabela = document.getElementById("pkt");
+        tabela.innerHTML = `<p>${punkty}</p>`;
+        //socket.emit("koniecTuryLoss", "koniec");
+        waiting = true;
+      }
     }
-
-    if (flag === false) {
-      await sleep(2000);
-      password[index[r]] = msgg[index[r]];
-      index[r] = index[msgLen - 1];
-      msgLen--;
+    if (waiting === false) {
+      for (x = 0; x < tabWithIndex.length; x++) {
+        password[tabWithIndex[x]] = msgg[tabWithIndex[x]];
+      }
 
       div.innerHTML = `<p> ${visiblePassword}</p>`;
       document.getElementById("gameContainer").appendChild(div);
+
+      //wisielec.innerHTML = `<img src="assets/${i}.png" alt="" />`;
     }
-    //wisielec.innerHTML = `<img src="assets/${i}.png" alt="" />`;
     if (comparePassword[1] === comparePassword[3]) {
       div.innerHTML = `DOBRZE!!!! ${msg.toUpperCase()} to poprawne haslo!</p>`;
       document.getElementById("chat").appendChild(div);
       break;
     }
+    if (waiting === false) {
+      if (comparePassword[0] === comparePassword[1]) {
+        div.innerHTML = `<p>DOBRZE!!!! ${msg.toUpperCase()} to poprawne haslo!</p>`;
+        document.getElementById("chat").appendChild(div);
+        punkty = punkty + msgLen;
+        tabela = document.getElementById("pkt");
+        tabela.innerHTML = `<p>${punkty}</p>`;
+        socket.emit("koniecTury", comparePassword[0]);
 
-    if (comparePassword[0] === comparePassword[1]) {
-      div.innerHTML = `<p>DOBRZE!!!! ${msg.toUpperCase()} to poprawne haslo!</p>`;
-      document.getElementById("chat").appendChild(div);
-      punkty = punkty + msgLen;
-      tabela = document.getElementById("pkt");
-      tabela.innerHTML = `<p>${punkty}</p>`;
-      socket.emit("koniecTury", comparePassword[0]);
-
-      break;
+        break;
+      }
     }
-    if (i == 7) {
+    if (i === 29) {
       div.innerHTML = `<p> Za pozno! Haslo to: ${msg} </p>`;
       document.getElementById("chat").appendChild(div);
       punkty = punkty - 10;

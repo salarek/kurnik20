@@ -34,15 +34,14 @@ io.on("connection", (socket) => {
         formatMessage(botName, `${user.username} dolaczyl do gry`)
       );
 
-    console.log(getNextUser());
     //send users and room info
-
     io.to(user.room, user.game).emit("roomUsers", {
       room: user.room,
       users: getRoomUsers(user.room),
     });
   });
 
+  //socket sending message to chat from current user to all users
   socket.on("clientMessage", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room, user.game).emit(
@@ -50,7 +49,7 @@ io.on("connection", (socket) => {
       formatMessage(user.username, msg)
     );
   });
-
+  //sending information about user who will start the game
   socket.on("startGame", (msg) => {
     const user = getCurrentUser(socket.id);
     readyPlayers = readyPlayers + msg;
@@ -59,6 +58,7 @@ io.on("connection", (socket) => {
     }
   });
   //wisielec
+  //sending to all password information
   socket.on("clientPassMessage", (msg) => {
     const user = getCurrentUser(socket.id);
 
@@ -66,6 +66,7 @@ io.on("connection", (socket) => {
   });
 
   //Wiesielec
+  //Ending game when one player win
   socket.on("koniecTury", (msg) => {
     const user = getCurrentUser(socket.id);
     socket.broadcast.emit("playerWon", msg);
@@ -73,6 +74,7 @@ io.on("connection", (socket) => {
   });
 
   //Wisielec
+  //ending game when all failed
   socket.on("koniecTuryLoss", (msg) => {
     numberOfPlayers++;
     if (numberOfPlayers === users.length) {
@@ -81,7 +83,7 @@ io.on("connection", (socket) => {
       numberOfPlayers = 0;
     }
   });
-
+  //DISCONNECTION
   socket.on("disconnect", () => {
     const user = userLeave(socket.id);
 
