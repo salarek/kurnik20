@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
       .to(user.room, user.game)
       .emit(
         "message",
-        formatMessage(botName, `${user.username} dolaczyl do gry`)
+        formatMessage(botName, `${user.username} joined to room`)
       );
 
     //send users and room info
@@ -40,14 +40,14 @@ io.on("connection", (socket) => {
       room: user.room,
       users: getRoomUsers(user.room),
     });
-
+    //inicjalizacja punktow dla uzytkownika, ktory sie polaczyl
     io.to(user.room).emit("settingPoints", user.username);
   });
-
-  socket.on("otherPlayersPoints", (msg) => {
+  //przekazanie informacji o punktach innym uzytkownikom
+  socket.on("userPointsInfo", (msg) => {
     const user = getCurrentUser(socket.id);
-    io.to(user.room).emit("otherPlayersPointsReceive", msg);
-    io.to(user.room).emit("punktyDoTabeli", msg);
+    io.to(user.room).emit("createNewPointsInDOM", msg);
+    io.to(user.room).emit("pointsInDOM", msg);
   });
   //socket sending message to chat from current user to all users
   socket.on("clientMessage", (msg) => {
@@ -57,13 +57,14 @@ io.on("connection", (socket) => {
       formatMessage(user.username, msg)
     );
   });
-  //sending information about user who will start the game
+  //Obsluga zdarzenia gdy 2 osoby zaczna gre
   socket.on("startGame", (msg) => {
     console.log("ready players: ", readyPlayers);
     const user = getCurrentUser(socket.id);
     readyPlayers = readyPlayers + msg;
     drawer = getNextUser();
     if (readyPlayers === 2) {
+      //wyslanie osoby, ktora ma zaczac ture
       io.to(user.room, user.game).emit("QUE", drawer);
       readyPlayers = 0;
     }
@@ -97,16 +98,12 @@ io.on("connection", (socket) => {
       io.to(user.room, user.game).emit("QUE", drawer);
     }
   });
-
+  //wiadomo
   socket.on("resetGame", (msg) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("resetGameClient", msg);
   });
 
-  socket.on("punktyGracza", (msg) => {
-    const user = getCurrentUser(socket.id);
-    io.to(user.room).emit("punktyDoTabeli", msg);
-  });
   //DISCONNECTION
   socket.on("disconnect", () => {
     const user2 = getCurrentUser(socket.id);
@@ -116,7 +113,7 @@ io.on("connection", (socket) => {
     }
     socket.broadcast
       .to(user2.room, user2.game)
-      .emit("eraseTable", user2.username);
+      .emit("erasePointsfromDOM", user2.username);
     const user = userLeave(socket.id);
 
     if (user) {
