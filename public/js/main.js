@@ -27,6 +27,7 @@ socket.on("message", (message) => {
 socket.on("roomUsers", (msg) => {
   console.log(msg);
 });
+
 //message from server to show on game container
 socket.on("GamePassword", (msg) => {
   outputGameMessage(msg);
@@ -55,6 +56,11 @@ socket.on("QUE", (msg) => {
 socket.on("punktyDoTabeli", (msg) => {
   const gracz = document.getElementById(`${msg.username}`);
   gracz.innerHTML = `<p>${msg.username} : ${msg.punkty}</p>`;
+});
+
+socket.on("eraseTable", (msg) => {
+  const gracz = document.getElementById(`${msg}`);
+  gracz.remove();
 });
 socket.on("settingPoints", (msg) => {
   const div = document.createElement("div");

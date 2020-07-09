@@ -114,6 +114,9 @@ io.on("connection", (socket) => {
     if (user2.username === drawer) {
       io.to(user2.room, user2.game).emit("QUE", getNextUser());
     }
+    socket.broadcast
+      .to(user2.room, user2.game)
+      .emit("eraseTable", user2.username);
     const user = userLeave(socket.id);
 
     if (user) {
