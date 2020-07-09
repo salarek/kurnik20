@@ -42,6 +42,9 @@ socket.on("QUE", (msg) => {
   console.log(msg);
   if (msg == username) {
     selectPassword.style.visibility = "visible";
+    chatIn.style.visibility = "hidden";
+  } else {
+    chatIn.style.visibility = "visible";
   }
   const div = document.createElement("div");
   //div.classList.add("message");
@@ -171,10 +174,10 @@ async function outputGameMessage(msg) {
   div.innerHTML = `<p> ${visiblePassword}</p>`;
   document.getElementById("gameContainer").appendChild(div);
   msgLen = msgg.length;
-  let chances = 5;
+  let chances = 15;
   let waiting = false;
-  zegar = 30;
-  for (i = 0; i < 30; i++) {
+  zegar = 60;
+  for (i = 0; i < 60; i++) {
     zegar--;
     czas = document.getElementById("czas");
     czas.innerHTML = `<p>czas: ${zegar}</p>`;
@@ -241,7 +244,7 @@ async function outputGameMessage(msg) {
         break;
       }
     }
-    if (i === 29) {
+    if (i === 59) {
       div.innerHTML = `<p> Za pozno! Haslo to: ${msg} </p>`;
       document.getElementById("chat").appendChild(div);
       punkty = punkty - 10;

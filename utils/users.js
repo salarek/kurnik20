@@ -30,6 +30,7 @@ function getNextUser() {
   if (i === users.length || i >= users.length) {
     i = 0;
   }
+
   return `${users[i].username}`;
 }
 module.exports = {

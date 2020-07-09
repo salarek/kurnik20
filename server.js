@@ -4,6 +4,7 @@ const express = require("express");
 const socketio = require("socket.io");
 let readyPlayers = 0;
 let numberOfPlayers = 0;
+let drawer = "";
 const {
   joinUser,
   getCurrentUser,
@@ -61,8 +62,10 @@ io.on("connection", (socket) => {
     console.log("ready players: ", readyPlayers);
     const user = getCurrentUser(socket.id);
     readyPlayers = readyPlayers + msg;
+    drawer = getNextUser();
     if (readyPlayers === 2) {
-      io.to(user.room, user.game).emit("QUE", getNextUser());
+      io.to(user.room, user.game).emit("QUE", drawer);
+      readyPlayers = 0;
     }
   });
   //wisielec
@@ -77,8 +80,9 @@ io.on("connection", (socket) => {
   //Ending game when one player win
   socket.on("koniecTury", (msg) => {
     const user = getCurrentUser(socket.id);
+    drawer = getNextUser();
     socket.broadcast.emit("playerWon", msg);
-    io.to(user.room, user.game).emit("QUE", getNextUser());
+    io.to(user.room, user.game).emit("QUE", drawer);
   });
 
   //Wisielec
@@ -87,9 +91,10 @@ io.on("connection", (socket) => {
     //numerofplayers jest po to, zeby wylapac pierwszego komu skonczy sie czas i zakonczyc ture
     // w przeciwnym razie wszyscy zglasza koniec tury i funkcja wywola sie 3 razy
     numberOfPlayers++;
+    drawer = getNextUser();
     if (numberOfPlayers === 1) {
       const user = getCurrentUser(socket.id);
-      io.to(user.room, user.game).emit("QUE", getNextUser());
+      io.to(user.room, user.game).emit("QUE", drawer);
     }
   });
 
@@ -104,6 +109,11 @@ io.on("connection", (socket) => {
   });
   //DISCONNECTION
   socket.on("disconnect", () => {
+    const user2 = getCurrentUser(socket.id);
+    console.log(user2.username);
+    if (user2.username === drawer) {
+      io.to(user2.room, user2.game).emit("QUE", getNextUser());
+    }
     const user = userLeave(socket.id);
 
     if (user) {
