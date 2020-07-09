@@ -22,8 +22,12 @@ function userLeave(id) {
 }
 
 function getNextUser() {
+  for (z = 0; z < users.length; z++) {
+    console.log(`uzytkownik: ${z}`, users[z].username);
+  }
   i++;
-  if (i === users.length) {
+  console.log(i);
+  if (i === users.length || i >= users.length) {
     i = 0;
   }
   return `${users[i].username}`;

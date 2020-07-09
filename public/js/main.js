@@ -23,6 +23,10 @@ socket.on("message", (message) => {
   //scroll down
   chat.scrollTop = chat.scrollHeight;
 });
+
+socket.on("roomUsers", (msg) => {
+  console.log(msg);
+});
 //message from server to show on game container
 socket.on("GamePassword", (msg) => {
   outputGameMessage(msg);
@@ -34,6 +38,8 @@ socket.on("playerWon", (msg) => {
 });
 
 socket.on("QUE", (msg) => {
+  console.log("NEXT USER");
+  console.log(msg);
   if (msg == username) {
     selectPassword.style.visibility = "visible";
   }
@@ -186,12 +192,11 @@ async function outputGameMessage(msg) {
             z++;
           }
         });
-        console.log(changeValue);
+
         if (changeValue === true) {
           changeValue = false;
           chances--;
         }
-        console.log(chances);
       } else {
         div.innerHTML = `<p> Jestes Wisielcem! Czekanie na pozostalych... </p>`;
         document.getElementById("chat").appendChild(div);
@@ -249,7 +254,6 @@ async function outputGameMessage(msg) {
 }
 
 function queOrder(msg) {
-  console.log(msg);
   const passContainer = document.getElementById("selectPasswordContainer");
   passContainer.style.display = "block";
 }

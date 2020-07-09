@@ -4,7 +4,6 @@ const express = require("express");
 const socketio = require("socket.io");
 let readyPlayers = 0;
 let numberOfPlayers = 0;
-//elos
 const {
   joinUser,
   getCurrentUser,
@@ -59,9 +58,10 @@ io.on("connection", (socket) => {
   });
   //sending information about user who will start the game
   socket.on("startGame", (msg) => {
+    console.log("ready players: ", readyPlayers);
     const user = getCurrentUser(socket.id);
     readyPlayers = readyPlayers + msg;
-    if (readyPlayers > 1 && readyPlayers < 3) {
+    if (readyPlayers === 2) {
       io.to(user.room, user.game).emit("QUE", getNextUser());
     }
   });
@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
   //sending to all password information
   socket.on("clientPassMessage", (msg) => {
     const user = getCurrentUser(socket.id);
-
+    numberOfPlayers = 0;
     io.to(user.room, user.game).emit("GamePassword", msg);
   });
 
@@ -84,11 +84,12 @@ io.on("connection", (socket) => {
   //Wisielec
   //ending game when all failed
   socket.on("koniecTuryLoss", (msg) => {
+    //numerofplayers jest po to, zeby wylapac pierwszego komu skonczy sie czas i zakonczyc ture
+    // w przeciwnym razie wszyscy zglasza koniec tury i funkcja wywola sie 3 razy
     numberOfPlayers++;
-    if (numberOfPlayers === users.length) {
+    if (numberOfPlayers === 1) {
       const user = getCurrentUser(socket.id);
       io.to(user.room, user.game).emit("QUE", getNextUser());
-      numberOfPlayers = 0;
     }
   });
 
