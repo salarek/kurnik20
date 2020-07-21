@@ -5,7 +5,7 @@ const chat = document.getElementById("chat");
 const passForm = document.getElementById("passForm");
 const selectPassword = document.getElementById("selectPassword");
 let changeValue = false;
-const { username, room, game } = Qs.parse(location.search, {
+let { username, room, game } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
@@ -13,7 +13,7 @@ const comparePassword = [];
 var punkty = 0;
 const socket = io();
 let inputLetter = "";
-
+room = room + game;
 socket.emit("joinRoom", { username, room, game });
 
 // przechwycenie wiadomosci od uzytkownikow i wyswietlenie jej na czacie

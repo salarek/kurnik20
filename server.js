@@ -26,17 +26,16 @@ io.on("connection", (socket) => {
     const user = joinUser(socket.id, username, room, game);
     console.log({ username, room, game });
     socket.join(user.room);
-    socket.join(user.game);
 
     socket.broadcast
-      .to(user.room, user.game)
+      .to(user.room)
       .emit(
         "message",
         formatMessage(botName, `${user.username} joined to room`)
       );
 
     //send users and room info
-    io.to(user.room, user.game).emit("roomUsers", {
+    io.to(user.room).emit("roomUsers", {
       room: user.room,
       users: getRoomUsers(user.room),
     });
@@ -52,10 +51,7 @@ io.on("connection", (socket) => {
   //socket sending message to chat from current user to all users
   socket.on("clientMessage", (msg) => {
     const user = getCurrentUser(socket.id);
-    io.to(user.room, user.game).emit(
-      "message",
-      formatMessage(user.username, msg)
-    );
+    io.to(user.room).emit("message", formatMessage(user.username, msg));
   });
   //Obsluga zdarzenia gdy 2 osoby zaczna gre
   socket.on("startGame", (msg) => {
@@ -65,7 +61,7 @@ io.on("connection", (socket) => {
     drawer = getNextUser();
     if (readyPlayers === 2) {
       //wyslanie osoby, ktora ma zaczac ture
-      io.to(user.room, user.game).emit("QUE", drawer);
+      io.to(user.room).emit("QUE", drawer);
       readyPlayers = 0;
     }
   });
@@ -74,7 +70,7 @@ io.on("connection", (socket) => {
   socket.on("clientPassMessage", (msg) => {
     const user = getCurrentUser(socket.id);
     numberOfPlayers = 0;
-    io.to(user.room, user.game).emit("GamePassword", msg);
+    io.to(user.room).emit("GamePassword", msg);
   });
 
   //Wiesielec
@@ -83,7 +79,7 @@ io.on("connection", (socket) => {
     const user = getCurrentUser(socket.id);
     drawer = getNextUser();
     socket.broadcast.emit("playerWon", msg);
-    io.to(user.room, user.game).emit("QUE", drawer);
+    io.to(user.room).emit("QUE", drawer);
   });
 
   //Wisielec
@@ -95,7 +91,7 @@ io.on("connection", (socket) => {
     drawer = getNextUser();
     if (numberOfPlayers === 1) {
       const user = getCurrentUser(socket.id);
-      io.to(user.room, user.game).emit("QUE", drawer);
+      io.to(user.room).emit("QUE", drawer);
     }
   });
   //wiadomo
@@ -109,7 +105,7 @@ io.on("connection", (socket) => {
     const user2 = getCurrentUser(socket.id);
     console.log(user2.username);
     if (user2.username === drawer) {
-      io.to(user2.room, user2.game).emit("QUE", getNextUser());
+      io.to(user2.room).emit("QUE", getNextUser());
     }
     socket.broadcast
       .to(user2.room, user2.game)
@@ -117,13 +113,13 @@ io.on("connection", (socket) => {
     const user = userLeave(socket.id);
 
     if (user) {
-      io.to(user.room, user.game).emit(
+      io.to(user.room).emit(
         "message",
         formatMessage(botName, `${user.username} has left the chat`)
       );
 
       // Send users and room info
-      io.to(user.room, user.game).emit("roomUsers", {
+      io.to(user.room).emit("roomUsers", {
         room: user.room,
         users: getRoomUsers(user.room),
       });

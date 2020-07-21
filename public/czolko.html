@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+      integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      Kurnik 2.0!
+      <form action="index.html">
+        <button class="backToHomeButton">Wroc</button>
+      </form>
+    </header>
+    <div class="mainWisielecContainer">
+      <div class="titleBanner">CZOLKO!</div>
+      <div id="selectPassword" class="selectPasswordContainer">
+        <br />
+        <form id="passForm">
+          <input id="category" type="text" placeholder="wpisz kategorie" />
+          <input id="password" type="text" placeholder="wpisz haslo" />
+          <button class="btn">send</button>
+        </form>
+      </div>
+      <div id="pointsContainer" class="pointsContainer">
+        <div id="pkt">Twoje punkty: 0</div>
+        <div id="czas">Czas:</div>
+        <div id="szanse">Szanse:</div>
+        <div id="playersPoints" class="playersPoints"></div>
+      </div>
+      <div id="gameContainer" class="gameContainer">
+        <div id="wisielec">
+          <form id="startGame">
+            <button id="startButton">START</button>
+          </form>
+        </div>
+      </div>
+      <div id="chat" class="chat">
+        Siemaneczko!
+      </div>
+      <div class="chatInput">
+        <form id="chatIn">
+          <input
+            id="msg"
+            type="text"
+            placeholder="Wpisz"
+            required
+            autocomplete="off"
+          />
+          <button class="btn">send</button>
+        </form>
+      </div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

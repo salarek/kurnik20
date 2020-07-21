@@ -14,7 +14,7 @@
 
     <div class="mainIndexContainer">
       <div class="joinRoomContainer">
-        <form action="wisielec.html">
+        <form id="mainForm">
           <div class="dupa">
             <div class="formControl">
               <label for="username">Uzytkownik</label>
@@ -34,9 +34,14 @@
                 <option value="300">300</option>
               </select>
               <label for="game">Gra</label>
-              <select class="select" name="game" id="game">
+              <select
+                onchange="onSelectChange()"
+                class="select"
+                name="game"
+                id="game"
+              >
                 <option value="wisielec">wisielec</option>
-                <option value="...">...</option>
+                <option value="czolko">czolko</option>
                 <option value="...">...</option>
               </select>
             </div>
@@ -46,5 +51,6 @@
       </div>
       <div class="blankContainer"></div>
     </div>
+    <script src="js/mainIndex.js"></script>
   </body>
 </html>
