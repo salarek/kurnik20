@@ -99,6 +99,7 @@ io.on("connection", (socket) => {
     const user = getCurrentUser(socket.id);
     io.to(user.room).emit("resetGameClient", msg);
   });
+  //CZOLKO
 
   //DISCONNECTION
   socket.on("disconnect", () => {
