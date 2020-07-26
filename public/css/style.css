@@ -3,7 +3,9 @@ body {
   padding: 0;
   font-family: "Arial", serif;
   color: white;
-  background-color: var(--background);
+
+  background-image: url("/assets/tlo.png");
+  background-repeat: repeat;
 }
 
 :root {
@@ -11,6 +13,7 @@ body {
   --light-1: #242424;
   --light-2: #696969;
   --background: #2b2b2b;
+  --myFont: "Rakkas", cursive;
 }
 .mainIndexContainer {
   margin: auto;
@@ -18,8 +21,10 @@ body {
   background-color: var(--dark-1);
 }
 header {
+  font-family: var(--myFont);
+  float: left;
   position: relative;
-  text-align: center;
+  text-align: left;
   padding: 5px;
   width: 100%;
   height: 10%;
@@ -27,29 +32,57 @@ header {
   color: red;
   font-size: 30px;
 }
+.menuInfo {
+  background-color: #333;
+  position: relative;
+}
+.menuInfo a {
+  float: left;
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+.menuInfo span {
+  margin-left: 10px;
+  margin-right: 580px;
+  float: left;
+  color: red;
 
+  font-size: 36px;
+}
+.menuInfo a:hover {
+  background-color: #ddd;
+  color: black;
+}
+.logo {
+  margin-left: 40px;
+  float: left;
+  width: 50px;
+}
 .joinRoomContainer {
   text-align: center;
-
+  font-family: var(--myFont);
   float: left;
-  width: 30%;
-  margin-left: 19%;
+  width: 39%;
+  margin-left: 4.7%;
   margin-top: 5%;
-
+  padding: 3%;
   height: 290px;
-  padding: 30px, 430px;
+  font-size: 20px;
   background-color: var(--light-1);
 }
 
 .blankContainer {
   text-align: center;
-
+  font-family: var(--myFont);
   float: right;
-  width: 30%;
-  margin-right: 19%;
+  width: 35%;
+  margin-right: 4.7%;
   margin-top: 5%;
-  height: 290px;
-  padding: 30px, 430px;
+  height: 235px;
+  padding: 5%;
+  font-size: 30px;
   background-color: var(--light-1);
 }
 
@@ -57,48 +90,72 @@ header {
   margin: 20px;
 }
 .btn {
+  font-family: var(--myFont);
   background-color: black;
-  color: white;
+  color: red;
   padding: 5px 30px;
   text-align: center;
   display: inline-block;
+  height: 43px;
   font-size: 19px;
   margin: 4px 2px;
   text-decoration: none;
   cursor: pointer;
-  border-radius: 15px;
 }
 input {
+  font-family: var(--myFont);
   position: relative;
   color: white;
   background: black;
+  width: 36%;
   padding: 20px;
   height: 0px;
-  font-size: 20px;
-  border-radius: 15px;
+  font-size: 100%;
 }
 
 .select {
+  font-family: var(--myFont);
   font-family: Arial;
   background-color: black;
   color: white;
+  height: 35px;
   font-size: 19px;
-  border: none;
-  width: 100px;
+
+  width: 22%;
+}
+.kura {
+  float: left;
+  margin: 5%;
+  width: 40%;
 }
 
 .dupa {
-  margin-top: 60px;
+  margin-top: 10px;
 }
 /* Wisielec page */
+.startButton {
+  position: relative;
+  padding: 20%;
+  margin: 100%;
 
+  margin-left: 180%;
+  background-color: red;
+  border-color: white;
+  font-size: 25px;
+  font-family: var(--myFont);
+}
 .mainWisielecContainer {
-  margin: 30px auto;
+  font-family: var(--myFont);
+  float: left;
+  margin: 2%;
+  margin-left: 10%;
   height: 100%;
   width: 80%;
   background-color: var(--dark-1);
 }
 .titleBanner {
+  font-family: var(--myFont);
+
   position: relative;
   text-align: center;
   padding: 5px;
@@ -110,16 +167,24 @@ input {
 }
 
 .selectPasswordContainer {
-  padding: 2px 0px 14px;
+  font-family: var(--myFont);
+  margin-top: -5px;
   text-align: center;
   float: left;
   width: 60%;
-  height: 60px;
+  height: 85px;
   background-color: var(--light-1);
+  visibility: visible;
+}
+#passForm {
   visibility: hidden;
+}
+.passForm input {
+  width: 30%;
 }
 
 .pointsContainer {
+  font-family: var(--myFont);
   padding: 0px 0px 14px;
   text-align: center;
   float: left;
@@ -129,18 +194,23 @@ input {
 }
 
 .playersPoints {
+  font-family: var(--myFont);
   height: 135px;
   overflow-y: scroll;
 }
-
+.joinRoomContainer p {
+  font-size: 30px;
+}
 .pointsContainer #czas,
 #pkt,
 #szanse {
+  font-family: var(--myFont);
   float: left;
   margin: 20px;
 }
 
 .gameContainer {
+  font-family: var(--myFont);
   position: relative;
   top: -60px;
   padding: 14px 0px 14px;
@@ -153,6 +223,7 @@ input {
   font-size: 50px;
 }
 .chat {
+  font-family: var(--myFont);
   padding: 14px 5% 14px;
   text-align: left;
   float: left;
@@ -163,6 +234,7 @@ input {
 }
 
 .chatInput {
+  font-family: var(--myFont);
   padding: 14px 0px 14px;
   text-align: center;
   float: left;
@@ -172,10 +244,11 @@ input {
 }
 
 .backToHomeButton {
+  font-family: var(--myFont);
   float: right;
 }
 img {
-  width: 100px;
+  width: 100%;
 }
 
 #wisielec {
@@ -186,6 +259,7 @@ img {
 
 /* czolko */
 .selectPasswordContainer2 {
+  font-family: var(--myFont);
   padding: 2px 0px 14px;
   text-align: center;
   float: left;
@@ -196,6 +270,7 @@ img {
 }
 
 .personInfo {
+  font-family: var(--myFont);
   position: relative;
   top: -60px;
   padding: 14px 0px 14px;
@@ -208,6 +283,7 @@ img {
   font-size: 50px;
 }
 .gameContainer2 {
+  font-family: var(--myFont);
   position: relative;
   top: -60px;
   padding: 14px 0px 14px;

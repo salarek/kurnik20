@@ -5,13 +5,23 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
       integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
-      crossorigin="anonymous"
+      crossorigin="a
+      nonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rakkas&display=swap"
+      rel="stylesheet"
     />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <header>
-      Kurnik 2.0!
+      <div class="menuInfo">
+        <span>Kurnik 2.0!</span>
+        <a href="#news">Aktualnosci</a>
+        <a href="#contact">Kontakt</a>
+        <a href="#about">Informacje</a>
+      </div>
       <form action="index.html">
         <button class="backToHomeButton">Wroc</button>
       </form>
@@ -20,7 +30,7 @@
       <div class="titleBanner">Wisielec Multiplayer</div>
       <div id="selectPassword" class="selectPasswordContainer">
         <br />
-        <form id="passForm">
+        <form class="passForm" id="passForm">
           <input id="category" type="text" placeholder="wpisz kategorie" />
           <input id="password" type="text" placeholder="wpisz haslo" />
           <button class="btn">send</button>
@@ -35,7 +45,7 @@
       <div id="gameContainer" class="gameContainer">
         <div id="wisielec">
           <form id="startGame">
-            <button id="startButton">START</button>
+            <button class="startButton" id="startButton">START</button>
           </form>
         </div>
       </div>

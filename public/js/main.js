@@ -40,7 +40,7 @@ socket.on("QUE", (msg) => {
   console.log("NEXT USER");
   console.log(msg);
   if (msg == username) {
-    selectPassword.style.visibility = "visible";
+    passForm.style.visibility = "visible";
     chatIn.style.visibility = "hidden";
   } else {
     chatIn.style.visibility = "visible";
@@ -120,7 +120,7 @@ socket.on("resetGameClient", (msg) => {
 startGamee.addEventListener("submit", (e) => {
   e.preventDefault();
   const button = e.target.elements.startButton;
-  wisielec.style.visibility = "hidden";
+  passForm.style.visibility = "hidden";
   button.style.visibility = "hidden";
   socket.emit("startGame", 1);
 });
@@ -136,7 +136,7 @@ passForm.addEventListener("submit", (e) => {
     const msg = e.target.elements.password.value;
     socket.emit("clientPassMessage", msg);
     e.target.elements.password.value = "";
-    selectPassword.style.visibility = "hidden";
+    passForm.style.visibility = "hidden";
   }
 });
 // zapisanie wiadomosci na czacie
