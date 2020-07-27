@@ -15,6 +15,7 @@ const socket = io();
 let inputLetter = "";
 room = room + game;
 socket.emit("joinRoom", { username, room, game });
+socket.emit("gameInfo", game);
 
 // przechwycenie wiadomosci od uzytkownikow i wyswietlenie jej na czacie
 socket.on("message", (message) => {
