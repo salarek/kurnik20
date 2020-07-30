@@ -3,21 +3,24 @@ const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
 let readyPlayers = 0;
+let readyPlayersCzolko = 0;
 let numberOfPlayers = 0;
 let drawer = "";
+let winnersCzolko = [];
 const {
   joinUser,
   getCurrentUser,
   getRoomUsers,
   userLeave,
   getNextUser,
+  userAboveUser,
 } = require("./utils/users");
 const formatMessage = require("./utils/messages");
 
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
-const botName = "bot";
+const botName = "BOT";
 
 io.on("connection", (socket) => {
   //USER JOIN TO ROOM
@@ -31,7 +34,7 @@ io.on("connection", (socket) => {
         .to(user.room)
         .emit(
           "message",
-          formatMessage(botName, `${user.username} joined to room`)
+          formatMessage(botName, `${user.username} Dolaczyl(a) do gry!`)
         );
 
       //send users and room info
@@ -102,6 +105,50 @@ io.on("connection", (socket) => {
       io.to(user.room).emit("resetGameClient", msg);
     });
     //CZOLKO
+    socket.on("startGameCzolko", (msg) => {
+      console.log("ready playersCzolko: ", readyPlayersCzolko);
+      const user = getCurrentUser(socket.id, game);
+      readyPlayersCzolko = readyPlayersCzolko + 1;
+
+      if (readyPlayersCzolko === 2) {
+        //wyslanie osoby, ktora ma zaczac ture
+        io.to(user.room).emit("RoundStart");
+        readyPlayersCzolko = 0;
+      }
+    });
+    socket.on("passwordForNextUser", (msg) => {
+      const user = getCurrentUser(socket.id, game);
+      const nextUser = userAboveUser(socket.id, game);
+      io.to(user.room).emit("passwordReceive", nextUser, msg);
+      readyPlayersCzolko++;
+      if (readyPlayersCzolko == 2) {
+        io.to(user.room).emit("QUE", getNextUser(game));
+        readyPlayersCzolko = 0;
+      }
+    });
+    socket.on("sendQuestion", (msg) => {
+      console.log(msg);
+      const user = getCurrentUser(socket.id, game);
+      io.to(user.room).emit("questionShow", msg);
+    });
+
+    socket.on("endQuestion", (msg) => {
+      if (msg) {
+        const user = getCurrentUser(socket.id, game);
+        winnersCzolko.push(msg.username);
+        socket.broadcast.to(user.room).emit("winner", msg, user.username);
+      }
+      nextUser = getNextUser(game);
+      let ind = winnersCzolko.findIndex((win) => win === nextUser.username);
+      console.log(`INDEX: ${ind}`);
+      if (ind >= 0) {
+        nextUser = getNextUser(game);
+        console.log(nextUser.username);
+      }
+
+      const user = getCurrentUser(socket.id, game);
+      io.to(user.room).emit("QUE", nextUser);
+    });
 
     //DISCONNECTION
     socket.on("disconnect", () => {

@@ -1,4 +1,4 @@
-document.getElementById("mainForm").action = `wisielec.html`;
+document.getElementById("mainForm").action = `czolko.html`;
 function onSelectChange() {
   let game = document.getElementById("game").value;
   console.log(game);

@@ -1,10 +1,15 @@
 const chatIn = document.getElementById("chatIn");
-const wisielec = document.getElementById("wisielec");
+const czolko = document.getElementById("czolko");
 const startGamee = document.getElementById("startGame");
 const chat = document.getElementById("chat");
 const passForm = document.getElementById("passForm");
+const questionForm = document.getElementById("questionForm");
+const question = document.getElementById("question");
+const questionTable = document.getElementById("questionTable");
 const selectPassword2 = document.getElementById("selectPassword2");
+const personInfo = document.getElementById("personInfo");
 let changeValue = false;
+let yourPassword = "";
 let { username, room, game } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
@@ -17,6 +22,21 @@ room = room + game;
 socket.emit("joinRoom", { username, room, game });
 socket.emit("gameInfo", game);
 
+startGamee.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const button = e.target.elements.startButton;
+
+  button.style.visibility = "hidden";
+  socket.emit("startGameCzolko", 1);
+});
+
+chatIn.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const msg = e.target.elements.msg.value;
+  socket.emit("clientMessage", msg);
+  e.target.elements.msg.value = "";
+  e.target.elements.msg.focus();
+});
 // przechwycenie wiadomosci od uzytkownikow i wyswietlenie jej na czacie
 socket.on("message", (message) => {
   outputMessage(message);
@@ -24,7 +44,100 @@ socket.on("message", (message) => {
   //scroll down
   chat.scrollTop = chat.scrollHeight;
 });
+function outputMessage(message) {
+  const div = document.createElement("div");
+  //div.classList.add("message");
+  div.innerHTML = `<p style = "color:#cf0000";>${message.username}:<span style = "color: white"> ${message.text}</span></p>`;
+  document.getElementById("chat").appendChild(div);
+}
 
+socket.on("RoundStart", () => {
+  console.log("ROUND START");
+  passForm.style.visibility = "visible";
+});
+
+passForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  while (e.target.elements.password.value.length > 30) {
+    alert("Maksymalnie 30 znakow!");
+    e.target.elements.password.value = "";
+  }
+  if (e.target.elements.password.value) {
+    const msg = e.target.elements.password.value;
+    socket.emit("passwordForNextUser", msg);
+    e.target.elements.password.value = "";
+
+    passForm.style.visibility = "hidden";
+  }
+});
+
+socket.on("passwordReceive", (usr, passwordRec) => {
+  if (username === usr) {
+    yourPassword = passwordRec;
+  } else {
+    const div = document.createElement("div");
+    div.innerHTML = `<p>${usr} : ${passwordRec}</p>`;
+    document.getElementById("osoba").appendChild(div);
+  }
+});
+socket.on("QUE", (msg) => {
+  questionTable.innerHTML = "";
+  console.log("NEXT USER");
+  console.log(msg);
+  if (msg == username) {
+    questionForm.style.visibility = "visible";
+  } else {
+    questionForm.style.visibility = "hidden";
+  }
+  const div = document.createElement("div");
+  div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> Pytanie zadaje gracz: ${msg}</span></p>`;
+  document.getElementById("chat").appendChild(div);
+});
+
+questionForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  while (e.target.elements.question.value.length > 60) {
+    alert("Maksymalnie 60 znakow!");
+    e.target.elements.question.value = "";
+  }
+  if (e.target.elements.question.value) {
+    const msg = e.target.elements.question.value;
+    socket.emit("sendQuestion", msg);
+    e.target.elements.question.value = "";
+
+    questionForm.style.visibility = "hidden";
+    const div = document.createElement("div");
+    div.innerHTML = `<button id="endQuestion" onclick = "endQuestion()">ZAKONCZ PYTANIE</button>`;
+    questionTable.appendChild(div);
+  }
+  if (e.target.elements.answer.value) {
+    const msg = e.target.elements.answer.value;
+    if (msg === yourPassword) {
+      const div = document.createElement("div");
+      div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> DOBRZE!!!! Twoja postac to: ${msg}</span></p>`;
+      document.getElementById("chat").appendChild(div);
+      socket.emit("endQuestion", msg);
+    }
+  }
+});
+
+socket.on("questionShow", (msg) => {
+  const div = document.createElement("div");
+  div.innerHTML = `<p>${msg}</p>`;
+  questionTable.appendChild(div);
+});
+
+function endQuestion() {
+  socket.emit("endQuestion");
+}
+
+socket.on("winner", (msg, usr) => {
+  const div = document.createElement("div");
+  div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> DOBRZE!!!! ${usr} odgadl swoja postac: ${msg}</span></p>`;
+  document.getElementById("chat").appendChild(div);
+});
+
+/*
 //przechwychenie hasla z serwera i rozpoczecie glownej funkcji gry
 socket.on("GamePassword", (msg) => {
   outputGameMessage(msg);
@@ -273,3 +386,4 @@ async function outputGameMessage(msg) {
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+*/

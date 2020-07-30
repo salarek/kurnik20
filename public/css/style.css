@@ -45,7 +45,7 @@ header {
 }
 .menuInfo span {
   margin-left: 10px;
-  margin-right: 580px;
+  margin-right: 520px;
   float: left;
   color: red;
 
@@ -58,7 +58,8 @@ header {
 .logo {
   margin-left: 40px;
   float: left;
-  width: 50px;
+  width: 43px;
+  height: 46px;
 }
 .joinRoomContainer {
   text-align: center;
@@ -93,12 +94,12 @@ header {
   font-family: var(--myFont);
   background-color: black;
   color: red;
-  padding: 5px 30px;
+  padding: 1px 30px;
   text-align: center;
   display: inline-block;
   height: 43px;
   font-size: 19px;
-  margin: 4px 2px;
+  margin: 0px 0px;
   text-decoration: none;
   cursor: pointer;
 }
@@ -178,9 +179,19 @@ input {
 }
 #passForm {
   visibility: hidden;
+  float: left;
 }
 .passForm input {
-  width: 30%;
+  width: 20%;
+  visibility: hidden;
+}
+.questionForm input {
+  width: 20%;
+}
+.questionForm {
+  margin-left: 60px;
+  visibility: hidden;
+  float: left;
 }
 
 .pointsContainer {
@@ -294,4 +305,13 @@ img {
   background-color: black;
   background-color: white;
   font-size: 50px;
+}
+
+.textArea {
+  background-color: black;
+  color: white;
+  font-family: var(--myFont);
+  font-size: 20px;
+  width: 400px;
+  height: 300px;
 }

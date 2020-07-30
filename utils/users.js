@@ -31,7 +31,7 @@ function userLeave(id, game) {
     }
   }
   if (game === "czolko") {
-    const index = wisielec.findIndex((user) => user.id === id);
+    const index = czolko.findIndex((user) => user.id === id);
     if (index !== -1) {
       return czolko.splice(index, 1)[0];
     }
@@ -64,10 +64,27 @@ function getNextUser(game) {
     return `${czolko[i].username}`;
   }
 }
+
+function userAboveUser(id, game) {
+  if (game === "czolko") {
+    const us = czolko.find((user) => user.id === id);
+    for (z = 0; z < czolko.length; z++) {
+      console.log(`uzytkownik: ${z}`, czolko[z].username);
+      if (us.username === czolko[z].username) {
+        z++;
+        if (z == czolko.length) {
+          z = 0;
+        }
+        return `${czolko[z].username}`;
+      }
+    }
+  }
+}
 module.exports = {
   joinUser,
   getCurrentUser,
   getRoomUsers,
   userLeave,
   getNextUser,
+  userAboveUser,
 };

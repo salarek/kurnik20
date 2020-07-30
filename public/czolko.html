@@ -7,14 +7,22 @@
       integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
       crossorigin="anonymous"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rakkas&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <header>
-      Kurnik 2.0!
-      <form action="index.html">
-        <button class="backToHomeButton">Wroc</button>
-      </form>
+      <div class="menuInfo">
+        <img class="logo" src="/assets/logotyp.jpg" />
+        <span>Kurnik 2.0</span>
+        <a href="/index.html">Start</a>
+        <a href="#news">Aktualnosci</a>
+        <a href="#contact">Kontakt</a>
+        <a href="#about">Informacje</a>
+      </div>
     </header>
     <div class="mainWisielecContainer">
       <div class="titleBanner">CZOLKO!</div>
@@ -22,24 +30,25 @@
         <br />
         <form id="passForm">
           <input id="password" type="text" placeholder="wpisz haslo" />
-          <input id="category" type="text" placeholder="wpisz pytanie" />
-
-          <button class="btn">send</button>
+          <button class="btn">Wyslij</button>
+        </form>
+        <form id="questionForm" class="questionForm">
+          <input id="question" type="text" placeholder="wpisz pytanie" />
+          <input id="answer" type="text" placeholder="Odpowiedz" />
+          <button class="btn">Wyslij</button>
         </form>
       </div>
       <div id="pointsContainer" class="pointsContainer">
-        <div id="pkt">Twoje punkty: 0</div>
-        <div id="czas">Czas:</div>
-        <div id="szanse">Szanse:</div>
+        <div id="osoba"></div>
         <div id="playersPoints" class="playersPoints"></div>
       </div>
-      <div id="personInfo" class="personInfo">Person Information</div>
-      <div id="gameContainer" class="gameContainer2">
-        <div id="wisielec">
-          <form id="startGame">
-            <button id="startButton">START</button>
-          </form>
-        </div>
+      <div id="personInfo" class="personInfo">
+        Twoje Notatki <textarea class="textArea"></textarea>
+      </div>
+      <div style="color: black;" id="questionTable" class="gameContainer2">
+        <form id="startGame">
+          <button id="startButton">START</button>
+        </form>
       </div>
       <div id="chat" class="chat">
         Siemaneczko!
@@ -53,7 +62,7 @@
             required
             autocomplete="off"
           />
-          <button class="btn">send</button>
+          <button class="btn">Wyslij</button>
         </form>
       </div>
     </div>
