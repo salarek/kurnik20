@@ -1,6 +1,7 @@
 const wisielec = [];
 const czolko = [];
 let i = 0;
+let d = 0;
 function joinUser(id, username, room, game) {
   const user = { id, username, room, game };
   if (game === "wisielec") {
@@ -64,6 +65,31 @@ function getNextUser(game) {
     return `${czolko[i].username}`;
   }
 }
+function getNextSocketUser(game) {
+  if (game === "wisielec") {
+    for (z = 0; z < wisielec.length; z++) {
+      console.log(`uzytkownik: ${z}`, wisielec[z].username);
+    }
+    d++;
+    if (d === wisielec.length || d >= wisielec.length) {
+      d = 0;
+    }
+
+    return `${wisielec[d].username}`;
+  }
+  if (game === "czolko") {
+    for (z = 0; z < czolko.length; z++) {
+      console.log(`uzytkownik: ${z}`, czolko[z].username);
+    }
+    d++;
+    console.log(i);
+    if (d === czolko.length || d >= czolko.length) {
+      d = 0;
+    }
+
+    return `${czolko[d].id}`;
+  }
+}
 
 function userAboveUser(id, game) {
   if (game === "czolko") {
@@ -87,4 +113,5 @@ module.exports = {
   userLeave,
   getNextUser,
   userAboveUser,
+  getNextSocketUser,
 };

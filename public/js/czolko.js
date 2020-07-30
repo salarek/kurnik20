@@ -8,6 +8,8 @@ const question = document.getElementById("question");
 const questionTable = document.getElementById("questionTable");
 const selectPassword2 = document.getElementById("selectPassword2");
 const personInfo = document.getElementById("personInfo");
+const admin = document.getElementById("admin");
+let isAdmin = false;
 let changeValue = false;
 let yourPassword = "";
 let { username, room, game } = Qs.parse(location.search, {
@@ -21,12 +23,28 @@ let inputLetter = "";
 room = room + game;
 socket.emit("joinRoom", { username, room, game });
 socket.emit("gameInfo", game);
+socket.on("adminTable", (msg) => {
+  console.log("WYPISZ ADMINA");
+  const adminShow = document.getElementById("adminShow");
+  adminShow.innerHTML = `ADMIN ${msg}`;
+});
+socket.on("admin", () => {
+  console.log("JESTEM ADMINEM DO KURWY");
+  isAdmin = true;
+  const div = document.createElement("div");
+  div.innerHTML = `<p>Podaj ilosc zawodnikow</p><button onclick = "iloscZawodnikow(2)">2</button><button onclick = "iloscZawodnikow(3)">3</button><button onclick = "iloscZawodnikow(4)">4</button>`;
+  admin.appendChild(div);
+});
 
+function iloscZawodnikow(number) {
+  socket.emit("numberOfPlayers", number);
+}
 startGamee.addEventListener("submit", (e) => {
   e.preventDefault();
   const button = e.target.elements.startButton;
 
   button.style.visibility = "hidden";
+  admin.innerHTML = "";
   socket.emit("startGameCzolko", 1);
 });
 
@@ -55,6 +73,20 @@ socket.on("RoundStart", () => {
   console.log("ROUND START");
   passForm.style.visibility = "visible";
 });
+socket.on("RoundStartReset", () => {
+  console.log("ROUND START");
+
+  admin.style.visibility = "visible";
+  passForm.style.visibility = "visible";
+  questionForm.style.visibility = "hidden";
+  const osoba = document.getElementById("osoba");
+  osoba.innerHTML = "";
+  if (isAdmin === true) {
+    const div = document.createElement("div");
+    div.innerHTML = `<p>Podaj ilosc zawodnikow</p><button onclick = "iloscZawodnikow(2)">2</button><button onclick = "iloscZawodnikow(3)">3</button><button onclick = "iloscZawodnikow(4)">4</button>`;
+    admin.appendChild(div);
+  }
+});
 
 passForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -80,7 +112,7 @@ socket.on("passwordReceive", (usr, passwordRec) => {
     document.getElementById("osoba").appendChild(div);
   }
 });
-socket.on("QUE", (msg) => {
+socket.on("QUE2", (msg) => {
   questionTable.innerHTML = "";
   console.log("NEXT USER");
   console.log(msg);
@@ -92,10 +124,12 @@ socket.on("QUE", (msg) => {
   const div = document.createElement("div");
   div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> Pytanie zadaje gracz: ${msg}</span></p>`;
   document.getElementById("chat").appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 });
 
 questionForm.addEventListener("submit", (e) => {
   e.preventDefault();
+
   while (e.target.elements.question.value.length > 60) {
     alert("Maksymalnie 60 znakow!");
     e.target.elements.question.value = "";
@@ -115,10 +149,17 @@ questionForm.addEventListener("submit", (e) => {
     if (msg === yourPassword) {
       const div = document.createElement("div");
       div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> DOBRZE!!!! Twoja postac to: ${msg}</span></p>`;
+      e.target.elements.answer.value = "";
       document.getElementById("chat").appendChild(div);
-      socket.emit("endQuestion", msg);
+      socket.emit("endQuestion", msg, username);
+    } else {
+      const div = document.createElement("div");
+      div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> Bledna odpowiedz</span></p>`;
+      e.target.elements.answer.value = "";
+      endQuestion();
     }
   }
+  chat.scrollTop = chat.scrollHeight;
 });
 
 socket.on("questionShow", (msg) => {
@@ -135,6 +176,7 @@ socket.on("winner", (msg, usr) => {
   const div = document.createElement("div");
   div.innerHTML = `<p style = "color:#cf0000";>BOT :<span style = "color: white"> DOBRZE!!!! ${usr} odgadl swoja postac: ${msg}</span></p>`;
   document.getElementById("chat").appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 });
 
 /*

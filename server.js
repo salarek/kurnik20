@@ -7,6 +7,9 @@ let readyPlayersCzolko = 0;
 let numberOfPlayers = 0;
 let drawer = "";
 let winnersCzolko = [];
+let maxPlayersCzolko = 3;
+let players = 0;
+let adminOfGame = "";
 const {
   joinUser,
   getCurrentUser,
@@ -14,6 +17,7 @@ const {
   userLeave,
   getNextUser,
   userAboveUser,
+  getNextSocketUser,
 } = require("./utils/users");
 const formatMessage = require("./utils/messages");
 
@@ -44,6 +48,16 @@ io.on("connection", (socket) => {
       });
       //inicjalizacja punktow dla uzytkownika, ktory sie polaczyl
       io.to(user.room).emit("settingPoints", user.username);
+
+      players++;
+      console.log(players);
+      if (players === 1) {
+        socket.emit("admin");
+        adminOfGame = socket.id;
+      } else {
+        adminUser = getCurrentUser(adminOfGame, game);
+        io.to(user.room).emit("adminTable", adminUser.username);
+      }
     });
   });
   socket.on("gameInfo", (game) => {
@@ -110,19 +124,22 @@ io.on("connection", (socket) => {
       const user = getCurrentUser(socket.id, game);
       readyPlayersCzolko = readyPlayersCzolko + 1;
 
-      if (readyPlayersCzolko === 2) {
+      if (readyPlayersCzolko === maxPlayersCzolko) {
         //wyslanie osoby, ktora ma zaczac ture
         io.to(user.room).emit("RoundStart");
         readyPlayersCzolko = 0;
       }
+    });
+    socket.on("numberOfPlayers", (number) => {
+      maxPlayersCzolko = number;
     });
     socket.on("passwordForNextUser", (msg) => {
       const user = getCurrentUser(socket.id, game);
       const nextUser = userAboveUser(socket.id, game);
       io.to(user.room).emit("passwordReceive", nextUser, msg);
       readyPlayersCzolko++;
-      if (readyPlayersCzolko == 2) {
-        io.to(user.room).emit("QUE", getNextUser(game));
+      if (readyPlayersCzolko == maxPlayersCzolko) {
+        io.to(user.room).emit("QUE2", getNextUser(game));
         readyPlayersCzolko = 0;
       }
     });
@@ -132,27 +149,60 @@ io.on("connection", (socket) => {
       io.to(user.room).emit("questionShow", msg);
     });
 
-    socket.on("endQuestion", (msg) => {
+    socket.on("endQuestion", (msg, username) => {
+      let reset = false;
       if (msg) {
         const user = getCurrentUser(socket.id, game);
-        winnersCzolko.push(msg.username);
+        winnersCzolko.push(username);
         socket.broadcast.to(user.room).emit("winner", msg, user.username);
       }
       nextUser = getNextUser(game);
-      let ind = winnersCzolko.findIndex((win) => win === nextUser.username);
+      const firstLoop = nextUser;
+      let ind = winnersCzolko.find((win) => win === nextUser);
       console.log(`INDEX: ${ind}`);
-      if (ind >= 0) {
+      console.log(winnersCzolko);
+      console.log(nextUser);
+      if (ind === nextUser) {
         nextUser = getNextUser(game);
-        console.log(nextUser.username);
+        while (1) {
+          console.log("petla");
+          let inds = winnersCzolko.find((win) => win === nextUser);
+          if (inds === nextUser) {
+            nextUser = getNextUser(game);
+            if (nextUser === firstLoop) {
+              console.log("nowa Tura");
+              const user = getCurrentUser(socket.id, game);
+              readyPlayersCzolko = 1;
+              io.to(user.room).emit("RoundStartReset");
+              reset = true;
+              winnersCzolko = [];
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+
+        console.log(nextUser);
       }
 
       const user = getCurrentUser(socket.id, game);
-      io.to(user.room).emit("QUE", nextUser);
+      if (reset === false) {
+        io.to(user.room).emit("QUE2", nextUser);
+      }
     });
 
     //DISCONNECTION
     socket.on("disconnect", () => {
+      players--;
       const user2 = getCurrentUser(socket.id, game);
+      if (socket.id === adminOfGame) {
+        console.log("ZMIANA ADMINA");
+        adminOfGame = getNextSocketUser(game);
+        io.to(adminOfGame).emit("admin");
+        const adminUser = getCurrentUser(adminOfGame, game);
+        io.to(user2.room).emit("adminTable", adminUser.username);
+      }
       console.log(user2.username);
       if (user2.username === drawer) {
         io.to(user2.room).emit("QUE", getNextUser(game));
@@ -165,7 +215,7 @@ io.on("connection", (socket) => {
       if (user) {
         io.to(user.room).emit(
           "message",
-          formatMessage(botName, `${user.username} has left the chat`)
+          formatMessage(botName, `${user.username} wyszedl z gry`)
         );
 
         // Send users and room info

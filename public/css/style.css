@@ -119,6 +119,7 @@ input {
   font-family: Arial;
   background-color: black;
   color: white;
+  margin-left: 5px;
   height: 35px;
   font-size: 19px;
 
@@ -214,7 +215,9 @@ input {
 }
 .pointsContainer #czas,
 #pkt,
-#szanse {
+#szanse,
+#admin,
+#adminShow {
   font-family: var(--myFont);
   float: left;
   margin: 20px;
