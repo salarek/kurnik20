@@ -122,7 +122,7 @@ socket.on("resetGameClient", (msg) => {
 //wcisniecie przycisku start - rozpoczecie rogrywki
 startGamee.addEventListener("submit", (e) => {
   e.preventDefault();
-  const button = e.target.elements.startButton;
+  const button = e.target.elements.startButton2;
   passForm.style.visibility = "hidden";
   button.style.visibility = "hidden";
   socket.emit("startGame", 1);

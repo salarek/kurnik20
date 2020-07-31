@@ -184,7 +184,6 @@ input {
 }
 .passForm input {
   width: 20%;
-  visibility: hidden;
 }
 .questionForm input {
   width: 20%;
@@ -317,4 +316,48 @@ img {
   font-size: 20px;
   width: 400px;
   height: 300px;
+}
+
+.startButtonCzolko {
+  position: relative;
+  padding: 10%;
+
+  background-color: black;
+  border-color: white;
+  color: white;
+  font-size: 25px;
+  font-family: var(--myFont);
+}
+.startButtonCzolko:hover {
+  background-color: red;
+}
+.numberOfPlayersButton {
+  position: relative;
+  padding: 5%;
+
+  background-color: black;
+  border-color: white;
+  color: white;
+  font-size: 15px;
+  font-family: var(--myFont);
+}
+.numberOfPlayersButton:hover {
+  background-color: red;
+}
+.numberOfPlayersButton:active {
+  background-color: white;
+}
+
+.endQuestionButton {
+  position: relative;
+  padding: 5%;
+
+  background-color: black;
+  border-color: white;
+  color: white;
+  font-size: 20px;
+  font-family: var(--myFont);
+}
+.endQuestionButton:hover {
+  background-color: red;
 }

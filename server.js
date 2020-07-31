@@ -6,6 +6,7 @@ let readyPlayers = 0;
 let readyPlayersCzolko = 0;
 let numberOfPlayers = 0;
 let drawer = "";
+let questioner = "";
 let winnersCzolko = [];
 let maxPlayersCzolko = 3;
 let players = 0;
@@ -51,12 +52,14 @@ io.on("connection", (socket) => {
 
       players++;
       console.log(players);
-      if (players === 1) {
-        socket.emit("admin");
-        adminOfGame = socket.id;
-      } else {
-        adminUser = getCurrentUser(adminOfGame, game);
-        io.to(user.room).emit("adminTable", adminUser.username);
+      if (game === "czolko") {
+        if (players === 1) {
+          socket.emit("admin");
+          adminOfGame = socket.id;
+        } else {
+          adminUser = getCurrentUser(adminOfGame, game);
+          io.to(user.room).emit("adminTable", adminUser.username);
+        }
       }
     });
   });
@@ -125,13 +128,17 @@ io.on("connection", (socket) => {
       readyPlayersCzolko = readyPlayersCzolko + 1;
 
       if (readyPlayersCzolko === maxPlayersCzolko) {
-        //wyslanie osoby, ktora ma zaczac ture
         io.to(user.room).emit("RoundStart");
         readyPlayersCzolko = 0;
       }
     });
     socket.on("numberOfPlayers", (number) => {
+      user = getCurrentUser(socket.id, game);
       maxPlayersCzolko = number;
+      io.to(user.room).emit(
+        "message",
+        formatMessage(botName, `Ilosc zawodnikow zmieniona na ${number}`)
+      );
     });
     socket.on("passwordForNextUser", (msg) => {
       const user = getCurrentUser(socket.id, game);
@@ -139,7 +146,8 @@ io.on("connection", (socket) => {
       io.to(user.room).emit("passwordReceive", nextUser, msg);
       readyPlayersCzolko++;
       if (readyPlayersCzolko == maxPlayersCzolko) {
-        io.to(user.room).emit("QUE2", getNextUser(game));
+        questioner = getNextUser(game);
+        io.to(user.room).emit("QUE2", questioner);
         readyPlayersCzolko = 0;
       }
     });
@@ -172,7 +180,7 @@ io.on("connection", (socket) => {
             if (nextUser === firstLoop) {
               console.log("nowa Tura");
               const user = getCurrentUser(socket.id, game);
-              readyPlayersCzolko = 1;
+              readyPlayersCzolko = 0;
               io.to(user.room).emit("RoundStartReset");
               reset = true;
               winnersCzolko = [];
@@ -188,6 +196,7 @@ io.on("connection", (socket) => {
 
       const user = getCurrentUser(socket.id, game);
       if (reset === false) {
+        questioner = nextUser;
         io.to(user.room).emit("QUE2", nextUser);
       }
     });
@@ -196,17 +205,23 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
       players--;
       const user2 = getCurrentUser(socket.id, game);
-      if (socket.id === adminOfGame) {
-        console.log("ZMIANA ADMINA");
-        adminOfGame = getNextSocketUser(game);
-        io.to(adminOfGame).emit("admin");
-        const adminUser = getCurrentUser(adminOfGame, game);
-        io.to(user2.room).emit("adminTable", adminUser.username);
+      if (game === "czolko") {
+        if (socket.id === adminOfGame) {
+          console.log("ZMIANA ADMINA");
+          adminOfGame = getNextSocketUser(game);
+          io.to(adminOfGame).emit("admin");
+          const adminUser = getCurrentUser(adminOfGame, game);
+          io.to(user2.room).emit("adminTable", adminUser.username);
+        }
+        if (user2.username === questioner) {
+          io.to(user2.room).emit("QUE2", getNextUser(game));
+        }
       }
       console.log(user2.username);
       if (user2.username === drawer) {
         io.to(user2.room).emit("QUE", getNextUser(game));
       }
+
       socket.broadcast
         .to(user2.room, user2.game)
         .emit("erasePointsfromDOM", user2.username);
